@@ -3,28 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Black Background Website</title>
-    <style>
-        /* Reset some default styling */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background-color: #000; /* Black background */
-            color: #fff; /* White text for contrast */
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-    </style>
+    <title>Fetch Data from Worker</title>
 </head>
 <body>
-  
+    <h1>Invoices from PayPal</h1>
+    <div id="invoice-data"></div>
+    
+    <script>
+        async function fetchInvoices() {
+            try {
+                const response = await fetch('https://ppcrossoriginrelayhandler.rzotime.workers.dev/');
+                
+                // Check if the response is OK
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                
+                // Parse the JSON response
+                const data = await response.json();
+                
+                // Display the data on the webpage
+                displayData(data);
+            } catch (error) {
+                console.error('Error fetching invoices:', error);
+                document.getElementById('invoice-data').innerText = 'Error fetching invoices. Please try again later.';
+            }
+        }
+    
+        function displayData(data) {
+            const invoiceContainer = document.getElementById('invoice-data');
+            invoiceContainer.innerHTML = ''; // Clear previous content
+    
+            // Assuming data.invoices is an array of invoice objects
+            data.invoices.forEach(invoice => {
+                const invoiceElement = document.createElement('div');
+                invoiceElement.innerHTML = `
+                    <h2>Invoice ID: ${invoice.id}</h2>
+                    <p>Status: ${invoice.status}</p>
+                    <p>Total: ${invoice.total}</p>
+                    <p>Created At: ${invoice.created_at}</p>
+                `;
+                invoiceContainer.appendChild(invoiceElement);
+            });
+        }
+    
+        // Call the function to fetch invoices when the page loads
+        window.onload = fetchInvoices;
+    </script>
+    
 </body>
 </html>
