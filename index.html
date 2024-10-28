@@ -6,7 +6,8 @@
 <title>Fetch Data from Worker</title>
 </head>
 <body>
-<h1>Invoices from PayPal</h1>
+<h1>Raw Data from Worker</h1>
+<pre id="raw-data"></pre>
 <script>
 async function fetchInvoices() {
 try {
@@ -16,14 +17,18 @@ if (!response.ok) {
 throw new Error(`HTTP error! Status: ${response.status}`);
 }
 
-// Log the response to the console
-console.log('Response from worker:', response);
+// Get the raw response text
+const rawData = await response.text();
+
+// Display the raw data on the webpage
+document.getElementById('raw-data').textContent = rawData;
 } catch (error) {
-console.error('Error fetching invoices:', error);
+console.error('Error fetching data:', error);
+document.getElementById('raw-data').textContent = 'Error fetching data. Please try again later.';
 }
 }
 
-// Call the function to fetch invoices when the page loads
+// Call the function to fetch data when the page loads
 window.onload = fetchInvoices;
 </script>
 </body>
